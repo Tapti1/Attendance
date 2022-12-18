@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
         rcStudentView.adapter=listAdapter
     }
     fun insertData(){
+        //ввод каких=то начальных данных
         val dbh= DbHandler(applicationContext)
         val db=dbh.getDataBase()
 
@@ -87,37 +88,45 @@ class MainActivity : AppCompatActivity() {
         }
     }
     fun updateResView(){
+        //Создаём DAO
         val dbh= DbHandler(applicationContext)
         val db=dbh.getDataBase()
         val MyStudentDao: StudentDao =db.myStudentDao()
         val MyAttendanceDao:AttendanceDao=db.myAttendanceDao()
 
         val job: Job = GlobalScope.launch(Dispatchers.IO) {
+            //получаем студентов и посещение
             val students=MyStudentDao.getAll()
             val attendance=MyAttendanceDao.getAttendancebySubjectDate(curDate,curSubject,curTimeSet)
             runOnUiThread{
+                //и обновляем rcView
                 listAdapter.updateAdapter(students,attendance)
             }
         }
     }
-    fun createChips(){
-        val dbh= DbHandler(applicationContext)
-        val db=dbh.getDataBase()
-        val myLessonDao:LessonDao=db.myLessonDao()
-        val mySubjectDao:SubjectDao=db.mySubjectDao()
-        val myTimeSetDao:TimeSetDao=db.myTimeSetDao()
+    fun createChips() {
+        //Создаём DAO
+        val dbh = DbHandler(applicationContext)
+        val db = dbh.getDataBase()
+        val myLessonDao: LessonDao = db.myLessonDao()
+        val mySubjectDao: SubjectDao = db.mySubjectDao()
+        val myTimeSetDao: TimeSetDao = db.myTimeSetDao()
 
+        //Добавляем чипы с преметами
         val job: Job = GlobalScope.launch(Dispatchers.IO) {
+            //получаем все предметы по дате
             val lessons=myLessonDao.getLessonsByDate(curDate)
 
             val groupChip:ChipGroup=findViewById(R.id.chipGroupSubject)
             for(i in lessons){
-
-                val chip: Chip =Chip(groupChip.context)
+                val chip: Chip =Chip(groupChip.context)     //сам чип
+                //То, что в нём находится
                 chip.text=mySubjectDao.get(i.subject_id).title.toString() +
                 "("+ myTimeSetDao.get(i.time_set_id).title.toString()+")";
                 chip.isCheckable=true
                 chip.isClickable=true
+
+                //При нажатии меняем предмет и время
                 chip.setOnClickListener {
                     curSubject=i.subject_id
                     curTimeSet=i.time_set_id
@@ -126,6 +135,7 @@ class MainActivity : AppCompatActivity() {
                 groupChip.addView(chip)
             }
         }
+        //просто какой-то чип
         val groupChip:ChipGroup=findViewById(R.id.chipGroupSubject)
         val chip: Chip =Chip(groupChip.context)
         chip.text="OMG"
