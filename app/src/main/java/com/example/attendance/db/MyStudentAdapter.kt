@@ -28,6 +28,7 @@ class MyStudentAdapter(students:ArrayList<Student>,attendance:ArrayList<Attendan
         val dbh= DbHandler(applicationContext)
         val db=dbh.getDataBase()
         val MyAttendanceDao: AttendanceDao =db.myAttendanceDao()
+        val MyStudentDao:StudentDao=db.myStudentDao()
 
         fun setData(student: Student,attend: Attendance){
             studentName.text=student.secondName + student.firstName[0]
