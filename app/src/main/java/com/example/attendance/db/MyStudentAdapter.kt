@@ -26,16 +26,16 @@ class MyStudentAdapter(students:ArrayList<Student>,attendance:ArrayList<Attendan
     class MyHolder(itemView: View,contextV:Context):RecyclerView.ViewHolder(itemView) {
         val studentName:TextView=itemView.findViewById(R.id.studentName)    //Имя в item
         val studentAttend:CheckBox=itemView.findViewById(R.id.checkBox)     //Checkbox в item
-        val context=contextV
+        val contextV=contextV
 
         //создаём DAO для работы с БД
-        val dbh= DbHandler(context)
+        val dbh= DbHandler(contextV)
         val db=dbh.getDataBase()
         val MyAttendanceDao: AttendanceDao =db.myAttendanceDao()
         val MyStudentDao:StudentDao=db.myStudentDao()
 
         fun setData(student: Student,attend: Attendance){
-            //получаем данные с item
+            //заполняем item
             studentName.text=student.secondName + student.firstName[0]
             studentAttend.isChecked =attend.status
 
@@ -44,17 +44,12 @@ class MyStudentAdapter(students:ArrayList<Student>,attendance:ArrayList<Attendan
             }
             studentAttend.setOnClickListener{
                 //меняем посещаемость при нажатии на CheckBox
-                if(attend.status){
-                    val newAttend:Attendance= Attendance(attend.id,attend.student_id,attend.lesson_id,false)
-                    val job: Job = GlobalScope.launch(Dispatchers.IO) {
-                        val students=MyStudentDao.getAll()
-                        val attendance=MyAttendanceDao.getAttendancebySubjectDate(curDate,curSubject,curTimeSet)
 
-                        runOnUiThread{
-                            listAdapter.updateAdapter(students,attendance)
-                        }
-                    }
+                var newAttend:Attendance= Attendance(attend.id,attend.student_id,attend.lesson_id,true)
+                if(attend.status){
+                    newAttend= Attendance(attend.id,attend.student_id,attend.lesson_id,false)
                 }
+                MyAttendanceDao.update(newAttend)
             }
         }
     }

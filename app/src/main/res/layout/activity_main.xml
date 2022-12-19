@@ -31,12 +31,13 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.158"
+        app:layout_constraintHorizontal_bias="0.152"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.105" />
+        app:layout_constraintVertical_bias="0.055" />
 
     <HorizontalScrollView
+        android:id="@+id/horizontalScrollView"
         android:layout_width="220dp"
         android:layout_height="125dp"
         app:layout_constraintBottom_toTopOf="@+id/rcStudentView"
@@ -54,19 +55,21 @@
                 android:id="@+id/chipGroupSubject"
                 android:layout_width="400dp"
                 android:layout_height="match_parent"
-                app:singleSelection="true">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chip4"
-                    style="@style/Widget.MaterialComponents.Chip.Filter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:scaleX="1.1"
-                    android:text="ООП(8:00)"
-                    android:textSize="20sp" />
-
-            </com.google.android.material.chip.ChipGroup>
+                app:singleSelection="true" />
         </LinearLayout>
     </HorizontalScrollView>
+
+    <Button
+        android:id="@+id/changeDateButton"
+        android:layout_width="122dp"
+        android:layout_height="72dp"
+        android:onClick="changeDate"
+        android:text="Поменять дату"
+        app:layout_constraintBottom_toTopOf="@+id/rcStudentView"
+        app:layout_constraintEnd_toStartOf="@+id/horizontalScrollView"
+        app:layout_constraintHorizontal_bias="0.32"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/currentDate"
+        app:layout_constraintVertical_bias="0.508" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

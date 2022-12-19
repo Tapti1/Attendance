@@ -1,9 +1,13 @@
 package com.example.attendance
 
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.CheckBox
+import android.widget.DatePicker
 import android.widget.TextView
+import android.widget.TimePicker
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,12 +21,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),DatePickerDialog.OnDateSetListener {
     val listAdapter= MyStudentAdapter(ArrayList(),ArrayList(),this)
 
     var curDate:String="27.11";
-
     var curSubject:Int=1;
     var curTimeSet:Int=1;
 
@@ -112,7 +116,7 @@ class MainActivity : AppCompatActivity() {
         val mySubjectDao: SubjectDao = db.mySubjectDao()
         val myTimeSetDao: TimeSetDao = db.myTimeSetDao()
 
-        //Добавляем чипы с преметами
+        //Добавляем чипы с предметами
         val job: Job = GlobalScope.launch(Dispatchers.IO) {
             //получаем все предметы по дате
             val lessons=myLessonDao.getLessonsByDate(curDate)
@@ -143,5 +147,27 @@ class MainActivity : AppCompatActivity() {
         chip.isClickable=true
         groupChip.addView(chip)
     }
+    fun getDate(){
+        //получаем сегодняшнюю дату
+        val calendar=Calendar.getInstance()
+        val curDate:String=calendar.get(Calendar.DAY_OF_MONTH).toString()+"."+
+                (calendar.get(Calendar.MONTH)+1).toString()+"."+
+                calendar.get(Calendar.YEAR).toString()
+        //если записей в Attendance по этой дате нет
+        //!!
+        //записываем всех студентов в базу
+    }
+    fun changeDate(view: View){
+        //запускаем календарь
+        DatePickerDialog(this,this,2022,12,19).show()
+    }
+
+    override fun onDateSet(p0: DatePicker?, year: Int, mounth: Int, dayOfMounth: Int) {
+        //записываем выбранную дату
+        curDate=dayOfMounth.toString()+"." + (mounth+1).toString()+"."+year.toString()
+        val t:TextView=findViewById(R.id.currentDate)
+        t.setText(curDate)
+    }
+
 
 }
