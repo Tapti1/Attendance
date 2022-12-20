@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity(),DatePickerDialog.OnDateSetListener {
                 (calendar.get(Calendar.MONTH)+1).toString()+"."+
                 calendar.get(Calendar.YEAR).toString()
         //если записей в Attendance по этой дате нет
-        //!!
+        //сделать!!
         //записываем всех студентов в базу
     }
     fun changeDate(view: View){
