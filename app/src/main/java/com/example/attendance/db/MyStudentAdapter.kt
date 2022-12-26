@@ -36,7 +36,7 @@ class MyStudentAdapter(students:ArrayList<Student>,attendance:ArrayList<Attendan
 
         fun setData(student: Student,attend: Attendance){
             //заполняем item
-            studentName.text=student.secondName + student.firstName[0]
+            studentName.text=student.secondName + " "+ student.firstName
             studentAttend.isChecked =attend.status
 
             studentName.setOnClickListener{

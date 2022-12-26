@@ -26,7 +26,7 @@ import java.util.Calendar
 class MainActivity : AppCompatActivity(),DatePickerDialog.OnDateSetListener {
     val listAdapter= MyStudentAdapter(ArrayList(),ArrayList(),this)
 
-    var curDate:String="27.11";
+    var curDate:String="27.11.2022";
     var curSubject:Int=1;
     var curTimeSet:Int=1;
 
@@ -77,14 +77,19 @@ class MainActivity : AppCompatActivity(),DatePickerDialog.OnDateSetListener {
             mySubjectDao.insert(subject)
             val subject2:Subject=Subject(0,"БД","Базы Данных")
             mySubjectDao.insert(subject2)
-            val lesson:Lesson= Lesson(0,"27.11",1,1)
+            val lesson:Lesson= Lesson(0,"27.11.2022",1,1)
             myLessonDao.insert(lesson)
-            val lesson2:Lesson= Lesson(0,"27.11",2,2)
+            val lesson2:Lesson= Lesson(0,"27.11.2022",2,2)
             myLessonDao.insert(lesson2)
             val attendance:Attendance=Attendance(0,1,1,true)
             myAttendanceDao.insert(attendance)
             val attendance2:Attendance=Attendance(0,1,2,false)
             myAttendanceDao.insert(attendance2)
+
+            val lesson3:Lesson= Lesson(0,"28.11.2022",1,1)
+            myLessonDao.insert(lesson3)
+            val attendance3:Attendance=Attendance(0,1,3,true)
+            myAttendanceDao.insert(attendance3)
 
 
             runOnUiThread{
@@ -116,12 +121,12 @@ class MainActivity : AppCompatActivity(),DatePickerDialog.OnDateSetListener {
         val mySubjectDao: SubjectDao = db.mySubjectDao()
         val myTimeSetDao: TimeSetDao = db.myTimeSetDao()
 
+        val groupChip:ChipGroup=findViewById(R.id.chipGroupSubject)
+
         //Добавляем чипы с предметами
         val job: Job = GlobalScope.launch(Dispatchers.IO) {
             //получаем все предметы по дате
             val lessons=myLessonDao.getLessonsByDate(curDate)
-
-            val groupChip:ChipGroup=findViewById(R.id.chipGroupSubject)
             for(i in lessons){
                 val chip: Chip =Chip(groupChip.context)     //сам чип
                 //То, что в нём находится
@@ -140,7 +145,7 @@ class MainActivity : AppCompatActivity(),DatePickerDialog.OnDateSetListener {
             }
         }
         //просто какой-то чип
-        val groupChip:ChipGroup=findViewById(R.id.chipGroupSubject)
+
         val chip: Chip =Chip(groupChip.context)
         chip.text="OMG"
         chip.isCheckable=true
@@ -167,6 +172,9 @@ class MainActivity : AppCompatActivity(),DatePickerDialog.OnDateSetListener {
         curDate=dayOfMounth.toString()+"." + (mounth+1).toString()+"."+year.toString()
         val t:TextView=findViewById(R.id.currentDate)
         t.setText(curDate)
+
+        updateResView()
+        //createChips()
     }
 
 
