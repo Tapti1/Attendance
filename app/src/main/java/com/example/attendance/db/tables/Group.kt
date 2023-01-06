@@ -3,9 +3,9 @@ package com.example.attendance.db.tables
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName="group_table")
+@Entity(tableName="groups")
 data class Group (
     @PrimaryKey(autoGenerate = true)
-    var id:Int,
+    var group_id:Int,
     var title:String
 )

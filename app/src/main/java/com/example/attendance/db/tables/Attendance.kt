@@ -4,10 +4,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.Date
 
-@Entity(tableName="attendance_table")
+@Entity(tableName="attendances")
 data class Attendance (
     @PrimaryKey(autoGenerate = true)
-    var id:Int,
+    var attendance_id:Int,
     var student_id: Int,
     var lesson_id: Int,
     var status: Boolean

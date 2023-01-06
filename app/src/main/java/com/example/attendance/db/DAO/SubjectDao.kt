@@ -7,12 +7,12 @@ import com.example.attendance.db.tables.*
 interface SubjectDao {
     @Insert
     fun insert(subject: Subject)
-    @Query("SELECT * FROM subject_table")
+    @Query("SELECT * FROM subjects")
     fun getAll():List<Subject>
     @Update
     fun update(subject: Subject)
     @Delete
     fun delete(subject: Subject)
-    @Query("SELECT * FROM subject_table WHERE id=:this_id")
+    @Query("SELECT * FROM subjects WHERE subject_id=:this_id")
     fun get(this_id:Int): Subject
 }

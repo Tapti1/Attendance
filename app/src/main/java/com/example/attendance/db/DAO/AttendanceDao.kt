@@ -7,18 +7,18 @@ import com.example.attendance.db.tables.*
 interface AttendanceDao {
     @Insert
     fun insert(attendance: Attendance)
-    @Query("SELECT * FROM attendance_table")
+    @Query("SELECT * FROM attendances")
     fun getAll():List<Attendance>
     @Update
     fun update(attendance: Attendance)
     @Delete
     fun delete(attendance: Attendance)
-    @Query("SELECT * FROM attendance_table WHERE id=:this_id")
+    @Query("SELECT * FROM attendances WHERE attendance_id=:this_id")
     fun get(this_id:Int): Attendance
-    @Query("SELECT * FROM attendance_table INNER JOIN lesson_table ON " +
-            "attendance_table.lesson_id=lesson_table.id " +
-            "WHERE lesson_table.subject_id=:cur_subject AND " +
-            "lesson_table.date=:cur_date AND " +
-            "lesson_table.time_set_id=:cur_time ")
+    @Query("SELECT * FROM attendances INNER JOIN lessons ON " +
+            "attendances.lesson_id=lessons.lesson_id " +
+            "WHERE lessons.subject_id=:cur_subject AND " +
+            "lessons.date=:cur_date AND " +
+            "lessons.time_set_id=:cur_time ")
     fun getAttendancebySubjectDate(cur_date:String,cur_subject:Int,cur_time:Int):List<Attendance>
 }

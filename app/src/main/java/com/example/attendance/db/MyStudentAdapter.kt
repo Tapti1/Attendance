@@ -36,7 +36,7 @@ class MyStudentAdapter(students:ArrayList<Student>,attendance:ArrayList<Attendan
 
         fun setData(student: Student,attend: Attendance){
             //заполняем item
-            studentName.text=student.secondName + " "+ student.firstName
+            studentName.text=student.second_name + " "+ student.first_name
             studentAttend.isChecked =attend.status
 
             studentName.setOnClickListener{
@@ -45,11 +45,11 @@ class MyStudentAdapter(students:ArrayList<Student>,attendance:ArrayList<Attendan
             studentAttend.setOnClickListener{
                 //меняем посещаемость при нажатии на CheckBox
 
-                var newAttend:Attendance= Attendance(attend.id,attend.student_id,attend.lesson_id,true)
+                var newAttend:Attendance= Attendance(attend.attendance_id,attend.student_id,attend.lesson_id,true)
                 if(attend.status){
-                    newAttend= Attendance(attend.id,attend.student_id,attend.lesson_id,false)
+                    newAttend= Attendance(attend.attendance_id,attend.student_id,attend.lesson_id,false)
                 }
-                MyAttendanceDao.update(newAttend)
+                //MyAttendanceDao.update(newAttend)
             }
         }
     }

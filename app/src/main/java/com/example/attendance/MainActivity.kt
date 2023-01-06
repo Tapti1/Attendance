@@ -64,35 +64,30 @@ class MainActivity : AppCompatActivity(),DatePickerDialog.OnDateSetListener {
         val myAttendanceDao:AttendanceDao=db.myAttendanceDao()
 
         val job: Job = GlobalScope.launch(Dispatchers.IO) {
-            val student: Student = Student(0,"Ольга","Михайлова","Владимировна",1)
-            myStudentDao.insert(student)
+            val listE=myStudentDao.getAll();
 
-            val group:Group= Group(0,"05402")
-            myGroupDao.insert(group)
-            val timeSet:TimeSet=TimeSet(0,"8:00")
-            myTimeSetDao.insert(timeSet)
-            val timeSet2:TimeSet=TimeSet(0,"9:40")
-            myTimeSetDao.insert(timeSet2)
-            val subject:Subject=Subject(0,"ООП","Объектноориентированное программирование")
-            mySubjectDao.insert(subject)
-            val subject2:Subject=Subject(0,"БД","Базы Данных")
-            mySubjectDao.insert(subject2)
-            val lesson:Lesson= Lesson(0,"27.11.2022",1,1)
-            myLessonDao.insert(lesson)
-            val lesson2:Lesson= Lesson(0,"27.11.2022",2,2)
-            myLessonDao.insert(lesson2)
-            val attendance:Attendance=Attendance(0,1,1,true)
-            myAttendanceDao.insert(attendance)
-            val attendance2:Attendance=Attendance(0,1,2,false)
-            myAttendanceDao.insert(attendance2)
+            if(listE.isEmpty()) {
+                val student: Student = Student(0, "Ольга", "Михайлова", "Владимировна", 1)
+                myStudentDao.insert(student)
 
-            val lesson3:Lesson= Lesson(0,"28.11.2022",1,1)
-            myLessonDao.insert(lesson3)
-            val attendance3:Attendance=Attendance(0,1,3,true)
-            myAttendanceDao.insert(attendance3)
-
-
-            runOnUiThread{
+                val group: Group = Group(0, "05402")
+                myGroupDao.insert(group)
+                val timeSet: TimeSet = TimeSet(0, "8:00")
+                myTimeSetDao.insert(timeSet)
+                val timeSet2: TimeSet = TimeSet(0, "9:40")
+                myTimeSetDao.insert(timeSet2)
+                val subject: Subject = Subject(0, "ООП", "Объектноориентированное программирование")
+                mySubjectDao.insert(subject)
+                val subject2: Subject = Subject(0, "БД", "Базы Данных")
+                mySubjectDao.insert(subject2)
+                val lesson: Lesson = Lesson(0, "27.11.2022", 1, 1)
+                myLessonDao.insert(lesson)
+                val lesson2: Lesson = Lesson(0, "27.11.2022", 2, 2)
+                myLessonDao.insert(lesson2)
+                val attendance: Attendance = Attendance(0, 1, 1, true)
+                myAttendanceDao.insert(attendance)
+                val attendance2: Attendance = Attendance(0, 1, 2, false)
+                myAttendanceDao.insert(attendance2)
             }
         }
     }
@@ -121,16 +116,16 @@ class MainActivity : AppCompatActivity(),DatePickerDialog.OnDateSetListener {
         val mySubjectDao: SubjectDao = db.mySubjectDao()
         val myTimeSetDao: TimeSetDao = db.myTimeSetDao()
 
-        val groupChip:ChipGroup=findViewById(R.id.chipGroupSubject)
-
         //Добавляем чипы с предметами
         val job: Job = GlobalScope.launch(Dispatchers.IO) {
             //получаем все предметы по дате
             val lessons=myLessonDao.getLessonsByDate(curDate)
+
+            val groupChip:ChipGroup=findViewById(R.id.chipGroupSubject)
             for(i in lessons){
                 val chip: Chip =Chip(groupChip.context)     //сам чип
                 //То, что в нём находится
-                chip.text=mySubjectDao.get(i.subject_id).title.toString() +
+                chip.text=mySubjectDao.get(i.subject_id).short_title.toString() +
                 "("+ myTimeSetDao.get(i.time_set_id).title.toString()+")";
                 chip.isCheckable=true
                 chip.isClickable=true
@@ -145,7 +140,7 @@ class MainActivity : AppCompatActivity(),DatePickerDialog.OnDateSetListener {
             }
         }
         //просто какой-то чип
-
+        val groupChip:ChipGroup=findViewById(R.id.chipGroupSubject)
         val chip: Chip =Chip(groupChip.context)
         chip.text="OMG"
         chip.isCheckable=true
@@ -172,9 +167,7 @@ class MainActivity : AppCompatActivity(),DatePickerDialog.OnDateSetListener {
         curDate=dayOfMounth.toString()+"." + (mounth+1).toString()+"."+year.toString()
         val t:TextView=findViewById(R.id.currentDate)
         t.setText(curDate)
-
         updateResView()
-        //createChips()
     }
 
 
