@@ -45,11 +45,19 @@ class MyStudentAdapter(students:ArrayList<Student>,attendance:ArrayList<Attendan
             studentAttend.setOnClickListener{
                 //меняем посещаемость при нажатии на CheckBox
 
-                var newAttend:Attendance= Attendance(attend.attendance_id,attend.student_id,attend.lesson_id,true)
-                if(attend.status){
-                    newAttend= Attendance(attend.attendance_id,attend.student_id,attend.lesson_id,false)
+                val job: Job = GlobalScope.launch(Dispatchers.IO) {
+                    var newAttend: Attendance =
+                        Attendance(attend.attendance_id, attend.student_id, attend.lesson_id, true)
+                    if (attend.status) {
+                        newAttend = Attendance(
+                            attend.attendance_id,
+                            attend.student_id,
+                            attend.lesson_id,
+                            false
+                        )
+                    }
+                    MyAttendanceDao.update(newAttend)
                 }
-                //MyAttendanceDao.update(newAttend)
             }
         }
     }

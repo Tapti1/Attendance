@@ -26,9 +26,14 @@ import java.util.Calendar
 class MainActivity : AppCompatActivity(),DatePickerDialog.OnDateSetListener {
     val listAdapter= MyStudentAdapter(ArrayList(),ArrayList(),this)
 
-    var curDate:String="27.11.2022";
-    var curSubject:Int=1;
-    var curTimeSet:Int=1;
+    var day:Int=0
+    var mounth:Int=0
+    var year:Int=0
+
+    var curDate:String="7.1.2023"
+    //var curDate:String="27.11.2022"
+    var curSubject:Int=1
+    var curTimeSet:Int=1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +41,7 @@ class MainActivity : AppCompatActivity(),DatePickerDialog.OnDateSetListener {
         init()
         insertData()
         createChips()
+        //getDate()
     }
     override fun onResume() {
         super.onResume()
@@ -84,12 +90,23 @@ class MainActivity : AppCompatActivity(),DatePickerDialog.OnDateSetListener {
                 myLessonDao.insert(lesson)
                 val lesson2: Lesson = Lesson(0, "27.11.2022", 2, 2)
                 myLessonDao.insert(lesson2)
+                val lesson3: Lesson = Lesson(0, "8.1.2023", 2, 2)
+                myLessonDao.insert(lesson3)
                 val attendance: Attendance = Attendance(0, 1, 1, true)
                 myAttendanceDao.insert(attendance)
                 val attendance2: Attendance = Attendance(0, 1, 2, false)
                 myAttendanceDao.insert(attendance2)
+
+                val lesson4: Lesson = Lesson(0, "7.1.2023", 2, 2)
+                myLessonDao.insert(lesson4)
+                val lesson5: Lesson = Lesson(0, "7.1.2023", 1, 1)
+                myLessonDao.insert(lesson4)
+                val attendance3: Attendance = Attendance(0, 1, 4, true)
+                myAttendanceDao.insert(attendance3)
+
             }
         }
+
     }
     fun updateResView(){
         //Создаём DAO
@@ -99,7 +116,7 @@ class MainActivity : AppCompatActivity(),DatePickerDialog.OnDateSetListener {
         val MyAttendanceDao:AttendanceDao=db.myAttendanceDao()
 
         val job: Job = GlobalScope.launch(Dispatchers.IO) {
-            //получаем студентов и посещение
+            //получаем студентов и занятия
             val students=MyStudentDao.getAll()
             val attendance=MyAttendanceDao.getAttendancebySubjectDate(curDate,curSubject,curTimeSet)
             runOnUiThread{
@@ -122,6 +139,8 @@ class MainActivity : AppCompatActivity(),DatePickerDialog.OnDateSetListener {
             val lessons=myLessonDao.getLessonsByDate(curDate)
 
             val groupChip:ChipGroup=findViewById(R.id.chipGroupSubject)
+            groupChip.removeAllViews()
+
             for(i in lessons){
                 val chip: Chip =Chip(groupChip.context)     //сам чип
                 //То, что в нём находится
@@ -150,16 +169,41 @@ class MainActivity : AppCompatActivity(),DatePickerDialog.OnDateSetListener {
     fun getDate(){
         //получаем сегодняшнюю дату
         val calendar=Calendar.getInstance()
-        val curDate:String=calendar.get(Calendar.DAY_OF_MONTH).toString()+"."+
-                (calendar.get(Calendar.MONTH)+1).toString()+"."+
-                calendar.get(Calendar.YEAR).toString()
-        //если записей в Attendance по этой дате нет
-        //сделать!!
-        //записываем всех студентов в базу
+
+        day=calendar.get(Calendar.DAY_OF_MONTH)
+        mounth=calendar.get(Calendar.MONTH)
+        year=calendar.get(Calendar.YEAR)
+
+        val curDate:String=day.toString() + "." + (mounth+1).toString()+"."+ year.toString()
+        //сделать чтоб дважды не заполнялось
+
+        val dbh= DbHandler(applicationContext)
+        val db=dbh.getDataBase()
+        val myStudentDao: StudentDao =db.myStudentDao()
+        val myLessonDao:LessonDao=db.myLessonDao()
+        val myAttendanceDao:AttendanceDao=db.myAttendanceDao()
+
+        val job: Job = GlobalScope.launch(Dispatchers.IO) {
+            //получаем студентов и пары
+            val students=myStudentDao.getAll()
+
+            //предполагем, что пары мы откуда-то получили
+            val lessons=myLessonDao.getLessonsByDate(curDate)
+
+            var attendance: Attendance = Attendance(0, 0, 0, true)
+            for(i in lessons) {
+                for(j in students){
+                    attendance=Attendance(0, j.student_id, i.lesson_id, false)
+                    myAttendanceDao.insert(attendance)
+                }
+            }
+        }
+        val t:TextView=findViewById(R.id.currentDate)
+        t.setText(curDate)
     }
     fun changeDate(view: View){
         //запускаем календарь
-        DatePickerDialog(this,this,2022,12,19).show()
+        DatePickerDialog(this,this, year,mounth,day).show()
     }
 
     override fun onDateSet(p0: DatePicker?, year: Int, mounth: Int, dayOfMounth: Int) {
@@ -167,7 +211,9 @@ class MainActivity : AppCompatActivity(),DatePickerDialog.OnDateSetListener {
         curDate=dayOfMounth.toString()+"." + (mounth+1).toString()+"."+year.toString()
         val t:TextView=findViewById(R.id.currentDate)
         t.setText(curDate)
-        updateResView()
+
+        createChips()
+        //updateResView()
     }
 
 
